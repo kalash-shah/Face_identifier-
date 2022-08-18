@@ -1,7 +1,8 @@
+from tkinter.font import names
 import numpy as np
 import cv2
 import pickle
-#import pyttsx3
+import pyttsx3
 
 face_cascade = cv2.CascadeClassifier('cascades\data\haarcascade_frontalface_alt2.xml')
 eye_cascade = cv2.CascadeClassifier('cascades\data\haarcascade_eye.xml')
@@ -9,13 +10,14 @@ eye_cascade = cv2.CascadeClassifier('cascades\data\haarcascade_eye.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read("trainner.yml")
 cap = cv2.VideoCapture(0)
-
-"""
+#change 
+names_list = []
+name_spoken = []
+# change closed
 speaker = pyttsx3.init('sapi5')
 voices = speaker.getProperty('voices')
 voiceRate = 150
-speaker.setProperty('rate', voiceRate)
-"""
+
 labels = {}
 with open("labels.pickle", "rb") as f:
     _labels = pickle.load(f)
@@ -45,10 +47,24 @@ while (True):
             name = labels[id_]
             color = (255,255,255)
             stroke = 2
+            # change
+            if name in names_list():
+                pass
+            else:
+                names_list.append(name)
+                name_spoken.append(name)
+
+            if name  in names_list() and name in name_spoken():
+                speaker.say(f'good morning {name}')
+                speaker.runAndWait()
+
+                names_list.remove(name)
+            else:
+                pass
+            # change close
 
             cv2.putText(frame, name, (x,y), font,1,  color,stroke, cv2.LINE_AA )
-            #speaker.say(labels[id_])
-            #speaker.runAndWait()
+
         img_item = '7.png'
 
         cv2.imwrite(img_item, roi_color)
